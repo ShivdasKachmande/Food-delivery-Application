@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crave Admin Dashboard</title>
+
+    <link rel="stylesheet" href="admin.css">
+    <script src="auth.js" defer></script>
+    <script src="admin.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="topbar">
+        <a href="index.html" class="brand">
+            ✦ crave<span>.</span>
+        </a>
+
+        <div>
+            <span>Administration</span>
+            <button id="logoutBtn" class="button secondary" type="button" hidden>Log out</button>
+            <a href="index.html" class="back-link">
+                View Store ↗
+            </a>
+        </div>
+    </header>
+
+        <!-- Admin login gate -->
+    <main id="loginGate" class="container" hidden>
+        <section class="panel login-panel">
+            <p class="eyebrow">ADMINISTRATION</p>
+            <h2>Admin sign in</h2>
+            <p class="muted">Sign in with an administrator account to manage the store.</p>
+            <form id="adminLoginForm" class="form-grid">
+                <label class="full-field">Email
+                    <input id="adminEmail" type="email" required autocomplete="username">
+                </label>
+                <label class="full-field">Password
+                    <input id="adminPassword" type="password" required autocomplete="current-password">
+                </label>
+                <p id="adminLoginError" class="full-field login-error" hidden></p>
+                <button class="button" type="submit">Sign in</button>
+            </form>
+        </section>
+    </main>
+
+    <main id="dashboard" class="container" hidden>
+
+        <!-- Dashboard Heading -->
+        <section class="welcome">
+            <p class="eyebrow">MANAGEMENT PANEL</p>
+
+            <h1>Admin Dashboard</h1>
+
+            <p>
+                Manage restaurants, food items, and customer orders
+                for your Crave store.
+            </p>
+        </section>
+
+        <!-- Dashboard Statistics -->
+        <section class="stats">
+
+            <article class="stat-card">
+                <span>Total Restaurants</span>
+                <strong id="restaurantCount">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Total Food Items</span>
+                <strong id="foodCount">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Total Orders</span>
+                <strong id="orderCount">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Pending Orders</span>
+                <strong id="pendingCount">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Revenue (delivered)</span>
+                <strong id="revenueTotal">₹0</strong>
+            </article>
+
+        </section>
+
+        <!-- Add Restaurant -->
+        <section class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">RESTAURANT MANAGEMENT</p>
+                    <h2>Add a Restaurant</h2>
+                </div>
+            </div>
+
+            <form id="restaurantForm" class="form-grid">
+
+                <label>
+                    Restaurant Name
+                    <input
+                        id="restaurantName"
+                        type="text"
+                        required
+                        maxlength="100"
+                        placeholder="e.g. Spice Garden">
+                </label>
+
+                <label>
+                    Cuisine
+                    <input
+                        id="restaurantCuisine"
+                        type="text"
+                        required
+                        maxlength="100"
+                        placeholder="e.g. Indian">
+                </label>
+
+                <label>
+                    Address
+                    <input
+                        id="restaurantAddress"
+                        type="text"
+                        required
+                        maxlength="200"
+                        placeholder="e.g. Pune, Maharashtra">
+                </label>
+
+                <label>
+                    Rating
+                    <input
+                        id="restaurantRating"
+                        type="number"
+                        min="0"
+                        max="5"
+                        step="0.1"
+                        value="4.0"
+                        required>
+                </label>
+
+                <button class="button" type="submit">
+                    + Add Restaurant
+                </button>
+
+            </form>
+        </section>
+
+        <!-- Restaurant List -->
+        <section class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">YOUR RESTAURANTS</p>
+                    <h2>Restaurant List</h2>
+                </div>
+
+                <button
+                    id="refreshRestaurants"
+                    class="button secondary"
+                    type="button">
+                    Refresh
+                </button>
+            </div>
+
+            <div id="restaurantList" class="data-list">
+                Loading restaurants...
+            </div>
+
+        </section>
+
+        <!-- Add Food Item -->
+        <section class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">MENU MANAGEMENT</p>
+                    <h2>Add a Food Item</h2>
+                </div>
+            </div>
+
+            <form id="foodForm" class="form-grid">
+
+                <label>
+                    Food Name
+                    <input
+                        id="foodName"
+                        type="text"
+                        required
+                        maxlength="100"
+                        placeholder="e.g. Classic Burger">
+                </label>
+
+                <label>
+                    Restaurant
+                    <select id="foodRestaurantId" required>
+                        <option value="">
+                            Choose a restaurant
+                        </option>
+                    </select>
+                </label>
+
+                <label>
+                    Category
+                    <input
+                        id="foodCategory"
+                        type="text"
+                        required
+                        maxlength="60"
+                        placeholder="e.g. Burgers">
+                </label>
+
+                <label>
+                    Price (₹)
+                    <input
+                        id="foodPrice"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        required
+                        placeholder="149">
+                </label>
+
+                <label class="full-field">
+                    Description
+                    <textarea
+                        id="foodDescription"
+                        rows="3"
+                        maxlength="500"
+                        placeholder="Describe the food item">
+                    </textarea>
+                </label>
+
+                <label class="full-field">
+                    Image URL (optional)
+                    <input
+                        id="foodImageUrl"
+                        type="url"
+                        placeholder="https://example.com/food.jpg">
+                </label>
+
+                <button class="button" type="submit">
+                    + Add Food Item
+                </button>
+
+            </form>
+        </section>
+
+        <!-- Food Item List -->
+        <section class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">MENU INVENTORY</p>
+                    <h2>Food Item List</h2>
+                </div>
+
+                <button
+                    id="refreshFood"
+                    class="button secondary"
+                    type="button">
+                    Refresh
+                </button>
+            </div>
+
+            <div id="foodList" class="data-list">
+                Loading food items...
+            </div>
+
+        </section>
+
+        <!-- Customer Order Management -->
+        <section class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">ORDER MANAGEMENT</p>
+                    <h2>Customer Orders</h2>
+                </div>
+
+                <select id="orderFilter" class="order-status-select" aria-label="Filter orders by status">
+                    <option value="ALL">All statuses</option>
+                    <option>PENDING</option><option>CONFIRMED</option><option>PREPARING</option>
+                    <option>OUT_FOR_DELIVERY</option><option>DELIVERED</option><option>CANCELLED</option>
+                </select>
+
+                <button
+                    id="refreshOrders"
+                    class="button secondary"
+                    type="button">
+                    Refresh Orders
+                </button>
+            </div>
+
+            <div id="orderList" class="data-list">
+                Loading customer orders...
+            </div>
+
+        </section>
+
+        <!-- Notifications -->
+        <p
+            id="adminNotice"
+            class="notice"
+            role="status"
+            aria-live="polite"
+            hidden>
+        </p>
+
+    </main>
+
+</body>
+</html>
